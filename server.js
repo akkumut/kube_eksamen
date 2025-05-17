@@ -1,29 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const app = express();
-const cors = require('cors');
-const mongoURI = process.env.MONGO_URI || 'mongodb://mongodb:27017/bilDB';
-
+const URL = process.env.MONGODB_URL;
 
 
 // Middleware
 app.use(express.json());
-app.use(cors());
-
 
 // MongoDB connection
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(URL)
 .then(() => console.log('✅ Connected to MongoDB'))
-.catch(err => console.error('❌ Error connecting to database:', err));
+.catch(err => console.error('❌ Error connecting to database:', err))
 
 // Routes
 app.use('/api/cars', require('./routes/carRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/customers', require('./routes/customerRoutes'));
-
 
 // Start server
 const PORT = 3000;
