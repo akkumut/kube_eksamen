@@ -1,9 +1,8 @@
-name: Build Only
+name: Build and Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -11,9 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout kode
+    - name: Tjek kode ud
       uses: actions/checkout@v3
 
     - name: Byg Docker image
+      run: docker build -t my-app:latest .
+
+    - name: Kør container og test den
       run: |
-        docker build -t my-app:latest .
+        docker run -d -p 3000:3000 --name test-container my-app:latest
+        sleep 5 # vent på at app starter
+
+        # Simpel test - du kan udskifte med noget mere avanceret
+        curl --fail http://localhost:3000 || exit 1
+
+    - name: Ryd op
+      run: |
+        docker stop test-container
+        docker rm test-container
