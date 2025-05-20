@@ -1,4 +1,4 @@
-name: Build and Test docker
+name: Build, Test and Push Docker
 
 on:
   push:
@@ -13,18 +13,22 @@ jobs:
     - name: Tjek kode ud
       uses: actions/checkout@v3
 
+    - name: Log ind på Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
     - name: Byg Docker image
-      run: docker build -t my-app:latest .
+      run: docker build -t umutaa/my-app:latest .
 
     - name: Kør container og test den
       run: |
-        docker run -d -p 3000:3000 --name test-container my-app:latest
+        docker run -d -p 3000:3000 --name test-container umutaa/my-app:latest
         sleep 5 # vent på at app starter
-
-        # Simpel test - du kan udskifte med noget mere avanceret
         curl --fail http://localhost:3000 || exit 1
 
     - name: Ryd op
       run: |
         docker stop test-container
         docker rm test-container
+
+    - name: Push Docker image til Docker Hub
+      run: docker push umutaa/my-app:latest
