@@ -6,6 +6,7 @@ const mongoURI = process.env.MONGO_URI || 'mongodb://mongodb:27017/bilDB';
 
 
 
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -16,6 +17,11 @@ mongoose.connect(mongoURI, {
 })
 .then(() => console.log('✅ Connected to MongoDB'))
 .catch(err => console.error('❌ Error connecting to database:', err));
+
+app.get('/', (req, res) => {
+  res.send('API is running');
+});
+
 
 // Routes
 app.use('/api/cars', require('./routes/carRoutes'));
