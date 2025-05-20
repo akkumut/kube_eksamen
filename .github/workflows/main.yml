@@ -25,7 +25,7 @@ jobs:
         sleep 5 # vent på at app starter
         curl --fail http://localhost:3000 || exit 1
 
-    - name: Ryd op
+    - name: Stop og fjern test container
       run: |
         docker stop test-container
         docker rm test-container
