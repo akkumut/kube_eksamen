@@ -17,11 +17,11 @@ jobs:
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Byg Docker image
-      run: docker build -t umutaa/my-app .
+      run: docker build -t umutaa/my-app:latest .
 
     - name: Kør container og test den
       run: |
-        docker run -d -p 3000:3000 --name test-container umutaa/my-app
+        docker run -d -p 3000:3000 --name test-container umutaa/my-app:latest
         sleep 5 # vent på at app starter
         curl --fail http://localhost:3000 || exit 1
 
@@ -31,4 +31,4 @@ jobs:
         docker rm test-container
 
     - name: Push Docker image til Docker Hub
-      run: docker push umutaa/my-app
+      run: docker push umutaa/my-app:latest
